@@ -4,74 +4,37 @@ export class MurrApi {
         this.api = url;
     }
     async promoteProduct(inventoryId, quantity) {
-        const response = await fetch(`${this.api}v1/inventory/${inventoryId}/promote`, {
-            "headers": {
-                "authorization": `Bearer ${this.token}`,
-                "cache-control": "no-cache",
-                "content-type": "application/json",
-                "pragma": "no-cache",
-            },
-            "body": JSON.stringify({quantity}),
-            "method": "POST"
-        });
-        return await response.json();
+        return await doV1Request(`inventory/${inventoryId}/promote`, "POST", {quantity});
     }
-    buyProducts(inventoryId, quantity) {
-        return fetch(`${this.api}v1/products/${inventoryId}/buy`, {
-            "headers": {
-                "authorization": `Bearer ${this.token}`,
-                "cache-control": "no-cache",
-                "content-type": "application/json",
-                "pragma": "no-cache",
-            },
-            "body": JSON.stringify({quantity}),
-            "method": "POST"
-        });
+    async buyProducts(inventoryId, quantity) {
+        return await doV1Request(`products/${inventoryId}/buy`, "POST", {quantity});
     }
-    buyBoxes(quantity) {
-        return fetch(`${this.api}v1/shop/boxes`, {
-            "headers": {
-                "authorization": `Bearer ${this.token}`,
-                "cache-control": "no-cache",
-                "content-type": "application/json",
-                "pragma": "no-cache",
-            },
-            "body": JSON.stringify({quantity}),
-            "method": "POST"
-        });
+    async buyBoxes(quantity) {
+        return await doV1Request(`shop/boxes`, "POST", {quantity});
     }
-    getProductInformation(inventoryId) {
-        return fetch(`${this.api}v1/products/${inventoryId}`, {
-            "headers": {
-                "authorization": `Bearer ${this.token}`,
-                "cache-control": "no-cache",
-                "content-type": "application/json",
-                "pragma": "no-cache",
-            },
-            "method": "GET"
-        });
+    async getProductInformation(inventoryId) {
+        return await doV1Request(`products/${inventoryId}`, "GET");
     }
     async getShopInfo() {
-        const response = await fetch(`${this.api}v1/shop`, {
-            "headers": {
-                "authorization": `Bearer ${this.token}`,
-                "cache-control": "no-cache",
-                "content-type": "application/json",
-                "pragma": "no-cache",
-            },
-            "method": "GET"
-        });
-        return await response.json();
+        return await doV1Request(`shop`, "GET");
     }
-    getTopSellers(today, limit) {
-        return fetch(`${this.api}v1/analytics/top-sellers?today=${today}&limit=${limit}`, {
+    async getTopSellers(today, limit) {
+        return await doV1Request(`v1/analytics/top-sellers?today=${today}&limit=${limit}`, "GET");
+    }
+    async doV1Request(url, method, body) {
+        const params = {
             "headers": {
                 "authorization": `Bearer ${this.token}`,
                 "cache-control": "no-cache",
                 "content-type": "application/json",
                 "pragma": "no-cache",
             },
-            "method": "GET"
-        });
+            "method": method
+        };
+        if (method === "POST") {
+            params.body = body;
+        }
+        const response = await fetch(`${this.api}${url}`, params);
+        return await response.json();
     }
 }
