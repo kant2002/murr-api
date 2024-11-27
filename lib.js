@@ -19,7 +19,7 @@ export class MurrApi {
         return await this.doV1Request(`shop`, "GET");
     }
     async getTopSellers(today, limit) {
-        return await this.doV1Request(`v1/analytics/top-sellers?today=${today}&limit=${limit}`, "GET");
+        return await this.doV1Request(`analytics/top-sellers?today=${today}&limit=${limit}`, "GET");
     }
     async doV1Request(url, method, body) {
         const params = {
@@ -34,7 +34,7 @@ export class MurrApi {
         if (method === "POST") {
             params.body = body;
         }
-        const response = await fetch(`${this.api}${url}`, params);
+        const response = await fetch(`${this.api}v1/${url}`, params);
         return await response.json();
     }
 }
