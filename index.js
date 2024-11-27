@@ -20,20 +20,24 @@ async function gameTick() {
         // buy products
         console.log("Buying products");
         for (const product of shopInfo.inventory) {
-            if (product.quantity === 0) {
-                console.log(`Buying product: ${product.productID} Qty: ${5}`);
-                const buyResult = await api.buyProducts(product.productID, 5);
+            const productResult = await api.getProductInformation(product.productID);
+            if (product.quantity < productResult.product.baseDemand) {
+                let qty = Math.min(5, Math.floor(shopInfo.balance / productResult.product.buyPrice));
+                qty = 5;
+                console.log(`Buying product: ${product.productID} Qty: ${qty}`);
+                const buyResult = await api.buyProducts(product.productID, qty);
                 console.log("Buy product result: ", buyResult)
-            }   
+            }
             
-            if (product.extraDemand === 0) {
-                console.log(`Buying extra demand: ${product.productID} Qty: ${1}`);
-                const buyResult = await api.promoteProduct(product.productID, 1);
+            if (product.extraDemand < productResult.product.baseDemand) {
+                const qty = productResult.product.baseDemand - product.extraDemand;
+                console.log(`Buying extra demand: ${product.productID} Qty: ${qty}`);
+                const buyResult = await api.promoteProduct(product.productID, qty);
                 console.log("Buy extra demand result: ", buyResult)
-            }  
+            }
         }
     }
-    if (shopInfo.balance > shopInfo.boxes.price && shopInfo.boxes.available < 10) {
+    if (shopInfo.balance > shopInfo.boxes.price + 200 && shopInfo.boxes.available < 10) {
         // buy boxes
         console.log(`Buying boxes: qty ${1}`);
         const buyResult = await api.buyBoxes(1);

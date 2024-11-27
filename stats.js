@@ -7,6 +7,10 @@ const name = process.argv[4];
 const api = new MurrApi(url, token);
 const shopInfo = await api.getShopInfo();
 console.log(`Shopping availability: ${shopInfo.shopping.uiMessage}`)
+for (const product of shopInfo.inventory) {
+    const productResult = await api.getProductInformation(product.productID);
+    console.log(`Product: ${product.productID} Qty: ${product.quantity}, ED: ${product.extraDemand}. Price: ${productResult.product}`);
+}
 const todayStats = await api.getTopSellers(true, 50);
 for (let i = 0; i < todayStats.top.length; i++) {
     const shop = todayStats.top[i];

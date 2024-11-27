@@ -32,9 +32,12 @@ export class MurrApi {
             "method": method
         };
         if (method === "POST") {
-            params.body = body;
+            params.body = JSON.stringify(body);
         }
         const response = await fetch(`${this.api}v1/${url}`, params);
+        if (!response.ok) {
+            return await response.json()
+        }
         return await response.json();
     }
 }
