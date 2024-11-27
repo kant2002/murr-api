@@ -4,22 +4,22 @@ export class MurrApi {
         this.api = url;
     }
     async promoteProduct(inventoryId, quantity) {
-        return await doV1Request(`inventory/${inventoryId}/promote`, "POST", {quantity});
+        return await this.doV1Request(`inventory/${inventoryId}/promote`, "POST", {quantity});
     }
     async buyProducts(inventoryId, quantity) {
-        return await doV1Request(`products/${inventoryId}/buy`, "POST", {quantity});
+        return await this.doV1Request(`products/${inventoryId}/buy`, "POST", {quantity});
     }
     async buyBoxes(quantity) {
-        return await doV1Request(`shop/boxes`, "POST", {quantity});
+        return await this.doV1Request(`shop/boxes`, "POST", {quantity});
     }
     async getProductInformation(inventoryId) {
-        return await doV1Request(`products/${inventoryId}`, "GET");
+        return await this.doV1Request(`products/${inventoryId}`, "GET");
     }
     async getShopInfo() {
-        return await doV1Request(`shop`, "GET");
+        return await this.doV1Request(`shop`, "GET");
     }
     async getTopSellers(today, limit) {
-        return await doV1Request(`v1/analytics/top-sellers?today=${today}&limit=${limit}`, "GET");
+        return await this.doV1Request(`v1/analytics/top-sellers?today=${today}&limit=${limit}`, "GET");
     }
     async doV1Request(url, method, body) {
         const params = {
